@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "source-sentry",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    // Set to "production" in the deployed environment (e.g. via an env override).
+    "ENVIRONMENT": "development"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "source-sentry",
+      // Placeholder — replace with the real ID from `wrangler d1 create source-sentry` before deploying.
+      // Local dev (`wrangler dev` + `--local` migrations) works with the placeholder.
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+  "triggers": {
+    // Every 10 minutes; each run checks sources whose interval has elapsed.
+    "crons": ["*/10 * * * *"]
+  },
+  "ratelimits": [
+    {
+      // Anti-abuse throttle on POST /api/auth/signup. 60s is the binding's max period,
+      // so this is "3 signups per minute per key" rather than a true hourly cap.
+      "name": "SIGNUP_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 3, "period": 60 }
+    }
+  ]
+}

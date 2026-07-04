@@ -1,0 +1,8 @@
+# Copy to .dev.vars for local development. All optional.
+# Without ANTHROPIC_API_KEY, change summaries fall back to a heuristic
+# (line counts + changed-line excerpts) instead of AI summaries.
+ANTHROPIC_API_KEY=""
+# Override the summary model, e.g. claude-haiku-4-5 to cut summarization cost.
+SUMMARY_MODEL=""
+# Lemon Squeezy webhook signing secret (enables /api/webhooks/lemonsqueezy).
+LEMONSQUEEZY_WEBHOOK_SECRET=""
