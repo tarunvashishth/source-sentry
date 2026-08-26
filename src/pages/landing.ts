@@ -1,3 +1,23 @@
+import { PRICING_ENABLED } from "../types";
+
+const pricingSection = PRICING_ENABLED
+  ? `
+  <h2 class="sec">Pricing</h2>
+  <div class="price">
+    <div class="card">
+      <h3>Free</h3>
+      <div class="amount">$0</div>
+      <ul><li>3 monitored sources</li><li>Hourly checks</li><li>AI change summaries</li><li>Slack + webhook alerts</li></ul>
+    </div>
+    <div class="card">
+      <h3>Pro</h3>
+      <div class="amount">$19<span style="font-size:14px;color:var(--muted)">/mo</span></div>
+      <ul><li>50 monitored sources</li><li>Checks every 10 minutes</li><li>AI change summaries</li><li>Signed webhooks for auto-resync</li></ul>
+    </div>
+  </div>
+`
+  : "";
+
 export const landingPage = `<!doctype html>
 <html lang="en">
 <head>
@@ -69,20 +89,7 @@ curl -X POST https://your-worker.dev/api/channels \\
   -H 'content-type: application/json' \\
   -d '{"type":"slack","url":"https://hooks.slack.com/services/…"}'</pre>
 
-  <h2 class="sec">Pricing</h2>
-  <div class="price">
-    <div class="card">
-      <h3>Free</h3>
-      <div class="amount">$0</div>
-      <ul><li>3 monitored sources</li><li>Hourly checks</li><li>AI change summaries</li><li>Slack + webhook alerts</li></ul>
-    </div>
-    <div class="card">
-      <h3>Pro</h3>
-      <div class="amount">$19<span style="font-size:14px;color:var(--muted)">/mo</span></div>
-      <ul><li>50 monitored sources</li><li>Checks every 10 minutes</li><li>AI change summaries</li><li>Signed webhooks for auto-resync</li></ul>
-    </div>
-  </div>
-
+  ${pricingSection}
   <footer>Source Sentry — built on Cloudflare Workers. <a href="/app">Dashboard</a></footer>
 </div>
 </body>

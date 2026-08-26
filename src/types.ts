@@ -62,6 +62,11 @@ export const PLANS = {
   pro: { maxSources: 50, minIntervalMinutes: 10 },
 } as const;
 
+// Pricing UI is hidden while everyone is on the free tier. Flip to true to
+// bring back the landing-page pricing section — PLANS and the Lemon Squeezy
+// webhook stay wired underneath either way.
+export const PRICING_ENABLED = false;
+
 export function planFor(user: UserRow) {
   return PLANS[user.plan] ?? PLANS.free;
 }
