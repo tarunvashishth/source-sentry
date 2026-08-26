@@ -9,16 +9,20 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    // Set to "production" in the deployed environment (e.g. via an env override).
-    "ENVIRONMENT": "development"
+    // This is the config actually pushed on every `wrangler deploy` — vars
+    // aren't like secrets, they get overwritten from here each time. Keep
+    // this "production" so the live Worker doesn't get SSRF protection
+    // disabled and the /dev/* routes don't stay publicly reachable (see
+    // allowPrivateHosts in src/types.ts and the guard in src/routes/dev.ts).
+    // Local testing of either needs an explicit override, e.g.
+    // `wrangler dev --var ENVIRONMENT:development`.
+    "ENVIRONMENT": "production"
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "source-sentry",
-      // Placeholder — replace with the real ID from `wrangler d1 create source-sentry` before deploying.
-      // Local dev (`wrangler dev` + `--local` migrations) works with the placeholder.
-      "database_id": "00000000-0000-0000-0000-000000000000"
+      "database_id": "3b9dc855-faab-4f88-9f9f-7edec55b31c1"
     }
   ],
   "triggers": {
