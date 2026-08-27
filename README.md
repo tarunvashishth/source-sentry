@@ -287,17 +287,22 @@ Three migrations in `migrations/`, applied with `npm run db:migrate:local` or
 | `npm run dev` | `wrangler dev --test-scheduled` — local server with `/__scheduled` for firing the cron. |
 | `npm test` | Vitest against the real Workers runtime; migrations are applied per run. |
 | `npm run types` | Regenerate `worker-configuration.d.ts` from `wrangler.jsonc`. Rerun after editing that file. |
-| `npm run check` | `tsc --noEmit`. See the note below. |
+| `npm run check` | `tsc --noEmit`. |
 | `npm run deploy` | `wrangler deploy`. |
 | `npm run db:migrate:local` / `:remote` | Apply D1 migrations. |
 
-`npm run check` currently reports two pre-existing errors in `src/routes/dev.ts`
-and `src/types.ts`: `wrangler types` narrows `ENVIRONMENT` to the literal
-`"production"` from the `vars` block, so both `=== "development"` comparisons are
-flagged as impossible. The comparisons are correct at runtime, since
-`--var ENVIRONMENT:development` overrides the value, but the generated type
-doesn't model the override. Widening the declaration in `src/env.d.ts` would fix
-it. `npm test` is unaffected.
+`npm run types` must be run before `npm run check` on a fresh clone, since
+`worker-configuration.d.ts` is generated and gitignored.
+
+One wrinkle worth knowing about: `wrangler types` narrows `ENVIRONMENT` to the
+literal `"production"` from the `vars` block, so comparing it to `"development"`
+reads as impossible to the typechecker even though `wrangler dev --var
+ENVIRONMENT:development` really does set it at runtime. The generated type can't
+be widened by declaration merging in `src/env.d.ts` — `Env` inherits the property
+rather than declaring it, and TypeScript requires a redeclaration be assignable to
+what it inherits. `isDevelopment()` in `src/types.ts` is the one place that widens
+it; read the flag through that helper rather than touching `env.ENVIRONMENT`
+directly.
 
 ---
 

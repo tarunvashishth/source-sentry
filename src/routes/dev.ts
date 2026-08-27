@@ -6,14 +6,14 @@
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { runSourceCheck } from "../lib/check";
-import type { AppEnv, SourceRow } from "../types";
+import { isDevelopment, type AppEnv, type SourceRow } from "../types";
 
 const dev = new Hono<AppEnv>();
 
 dev.use(
   "*",
   createMiddleware<AppEnv>(async (c, next) => {
-    if (c.env.ENVIRONMENT !== "development") {
+    if (!isDevelopment(c.env)) {
       return c.json({ error: "not found" }, 404);
     }
     await next();

@@ -94,12 +94,12 @@ describe("sources CRUD", () => {
     expect(ok.status).toBe(201);
   });
 
-  it("still rejects a malformed URL even in the dev-mode test environment", async () => {
-    // The test environment inherits wrangler.jsonc's ENVIRONMENT=development, under
-    // which allowPrivateHosts() deliberately permits private/internal hosts (same as
-    // local dev) — that specific SSRF-guard branch is unit-tested directly against
-    // both allowPrivate values in extract.test.ts. This checks the route still
-    // validates the URL is well-formed at all, regardless of environment.
+  it("rejects input that isn't a URL at all", async () => {
+    // The test environment runs with wrangler.jsonc's ENVIRONMENT=production, so
+    // allowPrivateHosts() is false here — the private/internal-host branch of the
+    // SSRF guard is unit-tested directly against both allowPrivate values in
+    // extract.test.ts. This checks the route rejects a string that doesn't parse
+    // as a URL at all, which fails regardless of environment.
     const key = await signupAndGetKey("route-sources-private@example.com", "203.0.113.31");
     const res = await exports.default.fetch(
       `${BASE}/api/sources`,

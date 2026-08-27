@@ -71,8 +71,18 @@ export function planFor(user: UserRow) {
   return PLANS[user.plan] ?? PLANS.free;
 }
 
+// Single reader for ENVIRONMENT. `wrangler types` narrows it to the literal in
+// wrangler.jsonc's vars ("production"), so a direct `=== "development"` comparison
+// is a type error even though `wrangler dev --var ENVIRONMENT:development` really
+// does set it at runtime. The generated type can't be widened by declaration
+// merging (Env inherits the property), so widen it here, once, instead of casting
+// at each call site.
+export function isDevelopment(env: Env): boolean {
+  return (env.ENVIRONMENT as string) === "development";
+}
+
 // Single source of truth for the SSRF bypass flag — used at every assertAllowedUrl
 // call site so dev-only private-host access can't drift out of sync between them.
 export function allowPrivateHosts(env: Env): boolean {
-  return env.ENVIRONMENT === "development";
+  return isDevelopment(env);
 }
